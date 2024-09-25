@@ -4,7 +4,6 @@ pipeline {
     environment {
         IMAGE_NAME = 'vehiclechecker'
         DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestranger13'
-        PATH = "/opt/homebrew/bin:/usr/local/bin:$PATH"
     }
 
     stages {
