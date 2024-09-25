@@ -1,4 +1,3 @@
-import globals from "globals";
 import pluginJs from "@eslint/js";
 
 export default [
@@ -14,25 +13,25 @@ export default [
         after: "readonly",
         window: "readonly",
         document: "readonly",
+        console: "readonly",
+        fetch: "readonly",
       },
     },
     // Rules to be adopted as part of the code quality analysis 
     rules: {
-      // Check for the use of console statements - warnings are shown but does not fail the linting process
-      "no-console": ["warn"],
-      // Check for the use of undeclared variables
-      "no-undef": "error",
+      // Check for any extra semicolons
+      "no-extra-semi":"error",
       // Check for duplicated case labels 
       "no-duplicate-case": "error",
+      // Check for max line length of 120
+      "max-len": ["warn", { "code": 120 }],
+      // Check for duplicate imports
+      "no-duplicate-imports": "error"
     },
   },
   {
     languageOptions: {
-        globals: {
-          window: "readonly",
-          document: "readonly",
-          // Add other globals as needed
-        },
+        globals: {},
       },
       ...pluginJs.configs.recommended,
     },
