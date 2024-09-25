@@ -17,7 +17,7 @@ pipeline {
         }
 
         // Build Stage with Docker
-        stage('Build') {
+        stage('Build Stage') {
             steps {
                 script {
                     echo 'Building the Docker image and tagging it as the latest'
@@ -70,7 +70,8 @@ pipeline {
             steps {
                 script {
                     echo 'Logging into DigitalOcean Container Registry'
-                    sh "doctl registry login"
+                    sh 'export PATH=$PATH:/usr/local/bin && doctl registry login'
+                    //sh "doctl registry login"
 
                     echo 'Pushing the Docker image to DigitalOcean'
                     sh "docker push ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
