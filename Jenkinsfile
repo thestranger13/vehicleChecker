@@ -12,11 +12,6 @@ pipeline {
             steps {
                 script {
                     echo "DigitalOcean Registry: ${DIGITALOCEAN_REGISTRY}"
-
-                    // Debugging: Check if sh, docker, and doctl are available
-                    sh 'which sh'
-                    sh 'which docker'
-                    sh 'which doctl'
                 }
             }
         }
