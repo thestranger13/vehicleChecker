@@ -21,7 +21,7 @@ pipeline {
         stage('Prepare Credentials') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'digitalocean_token', usernameVariable: 'DOCKER_USERNAME_DO', passwordVariable: 'DOCKER_TOKEN_DO')]) {
+                    withCredentials([usernamePassword(credentialsId: 'DigitalOcean', usernameVariable: 'DOCKER_USERNAME_DO', passwordVariable: 'DOCKER_TOKEN_DO')]) {
                         echo 'DigitalOcean credentials loaded'
                     }
                 }
