@@ -16,11 +16,12 @@ pipeline {
                     sh 'docker build -t ${IMAGE_NAME} .'
                     // Login to DockerHub
                     withCredentials([usernamePassword(credentialsId: 'DockerHub_Cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    // Tag the Docker image
-                    sh 'docker tag ${IMAGE_NAME} ${DOCKER_HUB_REPO}:latest'
-                    // Push the Docker image to Docker Hub
-                    sh 'docker push ${DOCKER_HUB_REPO}:latest'
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        // Tag the Docker image
+                        sh 'docker tag ${IMAGE_NAME} ${DOCKER_HUB_REPO}:latest'
+                        // Push the Docker image to Docker Hub
+                        sh 'docker push ${DOCKER_HUB_REPO}:latest'
+                    }
                 }
             }
         }
