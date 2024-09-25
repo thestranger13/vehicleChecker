@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'vehiclechecker'
         DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestranger13'
+        DROPLET_ID = 'docker-s-1vcpu-1gb-syd1-01'              
     }
 
     stages {
@@ -77,6 +78,19 @@ pipeline {
                 }
             }
         }
+
+        // Monitoring and Alerting stage for DigitalOcean App
+        stage('Monitoring and Alerting Stage') {
+            steps {
+                script {
+                    echo 'Retrieving current droplet stats with DigitalOcean API'
+                    sh '''
+                    curl -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
+                    -H "Authorization: Bearer $DO_API_TOKEN"
+                    '''
+                }
+            }
+        }
     }
 
     post {
@@ -85,9 +99,17 @@ pipeline {
         }
         success {
             echo 'The pipeline has completed successfully!'
+            // Send an email notification on success
+            mail to: 'team@yourdomain.com',
+                subject: "SUCCESS: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+                body: "${env.JOB_NAME} build #${env.BUILD_NUMBER} was successful.\nCheck console output at ${env.BUILD_URL}"
         }
         failure {
             echo 'The pipeline failed ): try again!'
+            // Send an email notification on failure
+            mail to: 'team@yourdomain.com',
+            subject: "FAILURE: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
+            body: "${env.JOB_NAME} build #${env.BUILD_NUMBER} failed.\nCheck console output at ${env.BUILD_URL}"
         }
     }
 }
