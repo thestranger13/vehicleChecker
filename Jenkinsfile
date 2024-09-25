@@ -65,7 +65,7 @@ pipeline {
             }
         }
 
-        // Release stage for DigitalOcean App Platform
+        // Release stage for DigitalOcean App
         stage('Release Stage') {
             steps {
                 script {
