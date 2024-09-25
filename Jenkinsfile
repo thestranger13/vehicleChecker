@@ -6,6 +6,7 @@ pipeline {
         IMAGE_NAME = 'vehiclechecker'
     }
 
+    stages {
          // Build Stage with Docker
         stage('Build') {
             steps {
@@ -38,16 +39,17 @@ pipeline {
             }
         }
 
-        // Deployment stage to Docker Container
+        // Deploy stage to Docker Container
         stage('Deploy Stage') {
             steps {
                 script {
-                echo 'Stop and remove any existing container'
-                sh 'docker stop vcContainer || true'
-                sh 'docker rm vcContainer || true'
-            
-                echo 'Running new container called vcContainer mapped to port 3000'
-                sh 'docker run -d --name vcContainer -p 3000:3000 ${IMAGE_NAME}:latest'
+                    echo 'Stop and remove any existing container'
+                    sh 'docker stop vcContainer || true'
+                    sh 'docker rm vcContainer || true'
+
+                    echo 'Running new container called vcContainer mapped to port 3000'
+                    sh 'docker run -d --name vcContainer -p 3000:3000 ${IMAGE_NAME}:latest'
+                }
             }
         }
     }
