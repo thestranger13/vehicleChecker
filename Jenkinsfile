@@ -84,19 +84,10 @@ pipeline {
             steps {
                 script {
                     echo 'Retrieving current droplet stats with DigitalOcean API'
-                    def dropletMetrics = sh(
-                        script: '''
-                            curl -s -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
-                            -H "Authorization: Bearer $DO_API_TOKEN"
-                        ''',
-                        returnStdout: true
-                    ).trim()
-                    
-                    // Log the droplet metrics
-                    echo "Droplet Metrics: ${dropletMetrics}"
-
-                    // Store the droplet metrics for use in email
-                    env.DROPLET_METRICS = dropletMetrics
+                    sh '''
+                    curl -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
+                    -H "Authorization: Bearer $DO_API_TOKEN"
+                    '''
                 }
             }
         }
@@ -110,14 +101,11 @@ post {
             script {
                 echo 'The pipeline has completed successfully!'
                 // Send an email notification on success
-                mail to: 'team@yourdomain.com',
+                mail to: 'S223646635',
                      subject: "Pipeline Succeeded: ${currentBuild.fullDisplayName}",
                      body: """
                         Guess what! The pipeline has completed successfully (:
                         Check the build here: ${env.BUILD_URL}
-
-                        The latest droplet metrics can also be found here:
-                        ${env.DROPLET_METRICS}
 
                         Thank you!
                      """
@@ -127,14 +115,12 @@ post {
             script {
                 echo 'The pipeline failed ): try again!'
                 // Send an email notification on failure
-                mail to: 'team@yourdomain.com',
+                mail to: 'S223646635',
                      subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
                      body: """
                         Uh-oh! The pipeline failed ):
                         Check the build here: ${env.BUILD_URL}
 
-                        The latest droplet metrics can also be found here:
-                        ${env.DROPLET_METRICS}
                      """
             }
         }
