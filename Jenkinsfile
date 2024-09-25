@@ -70,8 +70,7 @@ pipeline {
             steps {
                 script {
                     echo 'Logging into DigitalOcean Container Registry'
-                    sh 'export PATH=$PATH:/usr/local/bin && doctl registry login'
-                    //sh "doctl registry login"
+                    sh 'doctl registry login'                   
 
                     echo 'Pushing the Docker image to DigitalOcean'
                     sh "docker push ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
