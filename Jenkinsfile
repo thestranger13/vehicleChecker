@@ -18,7 +18,6 @@ pipeline {
                     sh 'which docker'
                     sh 'which doctl'
                 }
-                }
             }
         }
 
@@ -96,4 +95,4 @@ pipeline {
             echo 'The pipeline failed ): try again!'
         }
     }
-
+}
