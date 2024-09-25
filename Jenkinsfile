@@ -66,32 +66,7 @@ pipeline {
             }
         }
 
-        // Release stage for DigitalOcean App
-        stage('Release Stage') {
-            steps {
-                script {
-                    echo 'Logging into DigitalOcean Container Registry'
-                    sh 'doctl registry login'                   
 
-                    echo 'Pushing the Docker image to DigitalOcean'
-                    sh "docker push ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
-                }
-            }
-        }
-
-        // Monitoring and Alerting stage for DigitalOcean App
-        stage('Monitoring and Alerting Stage') {
-            steps {
-                script {
-                    echo 'Retrieving current droplet stats with DigitalOcean API'
-                    sh '''
-                    curl -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
-                    -H "Authorization: Bearer $DO_API_TOKEN"
-                    '''
-                }
-            }
-        }
-    }
 
 post {
         always {
