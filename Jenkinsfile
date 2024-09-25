@@ -12,6 +12,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    echo 'Checking shell environment...'
+                    sh 'echo $SHELL'
+                    sh 'which sh'
                     echo 'Building the Docker image...'
                     sh 'docker build -t ${IMAGE_NAME} .'
                     // Login to DockerHub
