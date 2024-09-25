@@ -17,6 +17,7 @@ pipeline {
                 }
             }
         }
+
         // Prepare DigitalOcean credentials
         stage('Prepare Credentials') {
             steps {
@@ -32,8 +33,11 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo 'Building the Docker image and tagging it as the latest'
+                    echo 'Building the Docker image and tagging it correctly'
+                    // Build and tag the image for Docker Hub
                     sh 'docker build -t ${IMAGE_NAME}:latest .'
+                    sh 'docker tag ${IMAGE_NAME}:latest ${DOCKER_HUB_REGISTRY}:latest'
+
                     echo 'Pushing the Docker image to Docker Hub'
                     sh 'docker push ${DOCKER_HUB_REGISTRY}:latest'
                 }
@@ -71,7 +75,7 @@ pipeline {
                     sh 'docker rm vcContainer || true'
 
                     echo 'Running new container called vcContainer mapped to port 3000'
-                    sh 'docker run -d --name vcContainer -p 3000:3000 ${IMAGE_NAME}:latest'
+                    sh 'docker run -d --name vcContainer -p 3000:3000 ${DOCKER_HUB_REGISTRY}:latest'
                 }
             }
         }
