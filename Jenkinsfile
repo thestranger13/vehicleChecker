@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    // Set the environment with default / global names
+    // Set the environment with global names
     environment {
         IMAGE_NAME = 'vehiclechecker'
     }
@@ -18,8 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo 'Building the Docker image...'
-                    // Build Docker Image i.e. vehiclechecker:latest
+                    echo 'Building the Docker image and tagging it as the latest'
                     sh 'docker build -t ${IMAGE_NAME}:latest .'
                 }
             }
@@ -29,10 +28,20 @@ pipeline {
         stage('Code Quality Analysis Stage') {
             steps {
                 script {
-                    // Ensure that the dependencies of the project have been installed
+                    echo 'Installing the necessary dependencies of the project'
                     sh 'npm install' 
-                    // Run ESLint to check code quality
+                    echo 'Running ESLint to analyse the code'
                     sh 'npm run lint' 
+                }
+            }
+        }
+
+        // Test Web Application using Mocha
+        stage('Test Stage') {
+            steps {
+                script {
+                    echo 'Testing the application with Mocha'
+                    sh 'npm test' 
                 }
             }
         }
