@@ -12,10 +12,11 @@ export default [
         it: "readonly",
         before: "readonly",
         after: "readonly",
-        ...globals.browser,
+        window: "readonly",
+        document: "readonly",
       },
     },
-    // the rules to be adopted as part of the code quality analysis 
+    // Rules to be adopted as part of the code quality analysis 
     rules: {
       // Check for the use of console statements - warnings are shown but does not fail the linting process
       "no-console": ["warn"],
@@ -27,8 +28,12 @@ export default [
   },
   {
     languageOptions: {
-      globals: globals.browser,
+        globals: {
+          window: "readonly",
+          document: "readonly",
+          // Add other globals as needed
+        },
+      },
+      ...pluginJs.configs.recommended,
     },
-    ...pluginJs.configs.recommended,
-  },
-]
+  ];
