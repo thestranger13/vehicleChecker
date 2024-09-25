@@ -1,24 +1,29 @@
 pipeline {
     agent any
 
-    // Set the environment with global names
     environment {
         IMAGE_NAME = 'vehiclechecker'
         DOCKER_HUB_REGISTRY = 'docker.io/thestrangerr13/masterofnone'
         DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestranger13'
-        DOCKER_USERNAME = 'thestrangerr13'
         DOCKER_TOKEN = credentials('dockerhub_token')
     }
 
     stages {
+        stage('Log Environment Variables') {
+            steps {
+                script {
+                    echo "Docker Hub Registry: ${DOCKER_HUB_REGISTRY}"
+                    echo "DigitalOcean Registry: ${DIGITALOCEAN_REGISTRY}"
+                }
+            }
+        }
         // Prepare DigitalOcean credentials
         stage('Prepare Credentials') {
             steps {
                 script {
-                    // Retrieve DigitalOcean credentials
-                    def digitalOceanCredentials = credentials('digitalocean_token')
-                    DOCKER_USERNAME_DO = digitalOceanCredentials.username
-                    DOCKER_TOKEN_DO = digitalOceanCredentials.password
+                    withCredentials([usernamePassword(credentialsId: 'digitalocean_token', usernameVariable: 'DOCKER_USERNAME_DO', passwordVariable: 'DOCKER_TOKEN_DO')]) {
+                        echo 'DigitalOcean credentials loaded'
+                    }
                 }
             }
         }
@@ -79,7 +84,7 @@ pipeline {
                     sh "echo '${DOCKER_TOKEN_DO}' | docker login ${DIGITALOCEAN_REGISTRY} -u ${DOCKER_USERNAME_DO} --password-stdin"
 
                     echo 'Tagging the Docker image for DigitalOcean'
-                    sh "docker tag ${DOCKER_HUB_REGISTRY}:latest ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
+                    sh "docker tag ${IMAGE_NAME}:latest ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
 
                     echo 'Pushing the Docker image to DigitalOcean'
                     sh "docker push ${DIGITALOCEAN_REGISTRY}/${IMAGE_NAME}:latest"
