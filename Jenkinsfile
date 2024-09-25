@@ -84,32 +84,59 @@ pipeline {
             steps {
                 script {
                     echo 'Retrieving current droplet stats with DigitalOcean API'
-                    sh '''
-                    curl -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
-                    -H "Authorization: Bearer $DO_API_TOKEN"
-                    '''
+                    def dropletMetrics = sh(
+                        script: '''
+                            curl -s -X GET "https://api.digitalocean.com/v2/droplets/$DROPLET_ID/metrics" \
+                            -H "Authorization: Bearer $DO_API_TOKEN"
+                        ''',
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Log the droplet metrics
+                    echo "Droplet Metrics: ${dropletMetrics}"
+
+                    // Store the droplet metrics for use in email
+                    env.DROPLET_METRICS = dropletMetrics
                 }
             }
         }
     }
 
-    post {
+post {
         always {
             echo 'This will always run after the pipeline'
         }
         success {
-            echo 'The pipeline has completed successfully!'
-            // Send an email notification on success
-            mail to: 'team@yourdomain.com',
-                subject: "SUCCESS: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
-                body: "${env.JOB_NAME} build #${env.BUILD_NUMBER} was successful.\nCheck console output at ${env.BUILD_URL}"
+            script {
+                echo 'The pipeline has completed successfully!'
+                // Send an email notification on success
+                mail to: 'team@yourdomain.com',
+                     subject: "Pipeline Succeeded: ${currentBuild.fullDisplayName}",
+                     body: """
+                        Guess what! The pipeline has completed successfully (:
+                        Check the build here: ${env.BUILD_URL}
+
+                        The latest droplet metrics can also be found here:
+                        ${env.DROPLET_METRICS}
+
+                        Thank you!
+                     """
+            }
         }
         failure {
-            echo 'The pipeline failed ): try again!'
-            // Send an email notification on failure
-            mail to: 'team@yourdomain.com',
-            subject: "FAILURE: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
-            body: "${env.JOB_NAME} build #${env.BUILD_NUMBER} failed.\nCheck console output at ${env.BUILD_URL}"
+            script {
+                echo 'The pipeline failed ): try again!'
+                // Send an email notification on failure
+                mail to: 'team@yourdomain.com',
+                     subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
+                     body: """
+                        Uh-oh! The pipeline failed ):
+                        Check the build here: ${env.BUILD_URL}
+
+                        The latest droplet metrics can also be found here:
+                        ${env.DROPLET_METRICS}
+                     """
+            }
         }
     }
 }
