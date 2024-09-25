@@ -14,13 +14,25 @@ pipeline {
             }
         }
 
-        // Build Stage with Docker
+         // Build Stage with Docker
         stage('Build') {
             steps {
                 script {
                     echo 'Building the Docker image...'
                     // Build Docker Image i.e. vehiclechecker:latest
                     sh 'docker build -t ${IMAGE_NAME}:latest .'
+                }
+            }
+        }
+
+        // Code Quality Analysis Stage using ESLint
+        stage('Code Quality Analysis Stage') {
+            steps {
+                script {
+                    // Ensure that the dependencies of the project have been installed
+                    sh 'npm install' 
+                    // Run ESLint to check code quality
+                    sh 'npm run lint' 
                 }
             }
         }
