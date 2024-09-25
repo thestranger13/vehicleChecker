@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'vehiclechecker'
         DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestranger13'
+        PATH+EXTRA = "/usr/local/bin:/bin:/usr/bin:/opt/homebrew/bin"
     }
 
     stages {
@@ -11,7 +12,14 @@ pipeline {
         stage('Log Environment Variables') {
             steps {
                 script {
+                    echo "Current PATH: ${env.PATH}"
                     echo "DigitalOcean Registry: ${DIGITALOCEAN_REGISTRY}"
+
+                    // Debugging: Check if sh, docker, and doctl are available
+                    sh 'which sh'
+                    sh 'which docker'
+                    sh 'which doctl'
+                }
                 }
             }
         }
