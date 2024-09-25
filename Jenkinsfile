@@ -5,19 +5,20 @@ pipeline {
     environment {
         IMAGE_NAME = 'vehiclechecker'
         DOCKER_HUB_REGISTRY = 'docker.io/thestrangerr13/masterofnone'
-        DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestrangerr13'
-        DOCKER_USERNAME = 'thestrangerr13' 
-        DOCKER_TOKEN = credentials('dockerhub_token') 
+        DIGITALOCEAN_REGISTRY = 'registry.digitalocean.com/thestranger13'
+        DOCKER_USERNAME = 'thestrangerr13'
+        DOCKER_TOKEN = credentials('dockerhub_token')
     }
 
     stages {
-        // Define the DigitalOcean credentials in a script block
+        // Prepare DigitalOcean credentials
         stage('Prepare Credentials') {
             steps {
                 script {
                     // Retrieve DigitalOcean credentials
-                    DOCKER_USERNAME_DO = credentials('digitalocean_token').username
-                    DOCKER_TOKEN_DO = credentials('digitalocean_token').password
+                    def digitalOceanCredentials = credentials('digitalocean_token')
+                    DOCKER_USERNAME_DO = digitalOceanCredentials.username
+                    DOCKER_TOKEN_DO = digitalOceanCredentials.password
                 }
             }
         }
